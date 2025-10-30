@@ -1184,7 +1184,6 @@
                                 <i class="fas fa-baby"></i>
                             </div>
                             <div class="sidebar-text">Data Kelahiran</div>
-                            <div class="sidebar-badge">New</div>
                         </a>
                     </li>
 

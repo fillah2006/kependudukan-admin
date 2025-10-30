@@ -281,5 +281,28 @@
             text-transform: uppercase;
             color: var(--primary-color);
         }
+
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .badge-alive {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .badge-deceased {
+            background: linear-gradient(135deg, #ef476f, #ff6b6b);
+            color: white;
+        }
+        
+        .empty-state i.fa-baby {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
     }
 </style>
