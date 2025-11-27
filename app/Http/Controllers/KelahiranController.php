@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Kelahiran;
@@ -8,13 +7,40 @@ use Illuminate\Http\Request;
 
 class KelahiranController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Pagination
-        $kelahiran = Kelahiran::with('orangtua')->latest()->paginate(10);
+        $search      = $request->search;
+        $gender      = $request->gender;
+        $orangtua_id = $request->orangtua_id;
 
-        // Hitung statistik dari SEMUA data (bukan dari paginated)
-        $totalLakiLaki = Kelahiran::where('jenis_kelamin', 'L')->count();
+        $query = Kelahiran::with('orangtua');
+
+        // Search
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_bayi', 'LIKE', "%$search%")
+                    ->orWhere('nama_ayah', 'LIKE', "%$search%")
+                    ->orWhere('nama_ibu', 'LIKE', "%$search%")
+                    ->orWhere('no_akte', 'LIKE', "%$search%");
+            });
+        }
+
+        // Filter gender
+        if ($gender) {
+            $query->where('jenis_kelamin', $gender);
+        }
+
+        // Filter orang tua
+        if ($orangtua_id) {
+            $query->where('orangtua_id', $orangtua_id);
+        }
+
+        $kelahiran = $query->latest()->paginate(10);
+
+        $orangtuaList = OrangTua::orderBy('nama')->get();
+
+        // Stats
+        $totalLakiLaki  = Kelahiran::where('jenis_kelamin', 'L')->count();
         $totalPerempuan = Kelahiran::where('jenis_kelamin', 'P')->count();
         $totalKelahiran = Kelahiran::count();
 
@@ -22,7 +48,8 @@ class KelahiranController extends Controller
             'kelahiran',
             'totalLakiLaki',
             'totalPerempuan',
-            'totalKelahiran'
+            'totalKelahiran',
+            'orangtuaList'
         ));
     }
 
@@ -35,17 +62,17 @@ class KelahiranController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_bayi' => 'required|string|max:255',
+            'nama_bayi'     => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
-            'nama_ayah' => 'required|string|max:255',
-            'nama_ibu' => 'required|string|max:255',
-            'tempat_lahir' => 'nullable|string|max:255',
-            'berat_badan' => 'nullable|numeric|min:0',
+            'nama_ayah'     => 'required|string|max:255',
+            'nama_ibu'      => 'required|string|max:255',
+            'tempat_lahir'  => 'nullable|string|max:255',
+            'berat_badan'   => 'nullable|numeric|min:0',
             'panjang_badan' => 'nullable|numeric|min:0',
-            'alamat' => 'nullable|string',
-            'no_akte' => 'nullable|string|max:100',
-            'orangtua_id' => 'required|exists:orang_tua,id'
+            'alamat'        => 'nullable|string',
+            'no_akte'       => 'nullable|string|max:100',
+            'orangtua_id'   => 'required|exists:orang_tua,id',
         ]);
 
         Kelahiran::create($request->all());
@@ -68,17 +95,17 @@ class KelahiranController extends Controller
     public function update(Request $request, Kelahiran $kelahiran)
     {
         $request->validate([
-            'nama_bayi' => 'required|string|max:255',
+            'nama_bayi'     => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
-            'nama_ayah' => 'required|string|max:255',
-            'nama_ibu' => 'required|string|max:255',
-            'tempat_lahir' => 'nullable|string|max:255',
-            'berat_badan' => 'nullable|numeric|min:0',
+            'nama_ayah'     => 'required|string|max:255',
+            'nama_ibu'      => 'required|string|max:255',
+            'tempat_lahir'  => 'nullable|string|max:255',
+            'berat_badan'   => 'nullable|numeric|min:0',
             'panjang_badan' => 'nullable|numeric|min:0',
-            'alamat' => 'nullable|string',
-            'no_akte' => 'nullable|string|max:100',
-            'orangtua_id' => 'required|exists:orang_tua,id'
+            'alamat'        => 'nullable|string',
+            'no_akte'       => 'nullable|string|max:100',
+            'orangtua_id'   => 'required|exists:orang_tua,id',
         ]);
 
         $kelahiran->update($request->all());
