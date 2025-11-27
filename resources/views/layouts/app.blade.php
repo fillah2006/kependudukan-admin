@@ -35,6 +35,8 @@
     <!-- Include JavaScript -->
     @include('layouts.scripts')
 
+    @include('layouts.pagination')
+
     @stack('scripts')
 </body>
 </html>

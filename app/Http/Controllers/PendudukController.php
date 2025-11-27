@@ -8,15 +8,50 @@ use App\Models\Penduduk;
 class PendudukController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (search + filter + pagination).
      */
-    public function index()
+    public function index(Request $request)
     {
-        $penduduks = Penduduk::all();
+        $search = $request->search;
+        $filterGender = $request->gender;
+        $filterTgl = $request->birthday;
+
+        $query = Penduduk::query();
+
+        // === SEARCH ===
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%$search%")
+                  ->orWhere('last_name', 'LIKE', "%$search%")
+                  ->orWhere('nik', 'LIKE', "%$search%");
+            });
+        }
+
+        // === FILTER JENIS KELAMIN ===
+        if ($filterGender) {
+            $query->where('gender', $filterGender);
+        }
+
+        // === FILTER TANGGAL LAHIR ===
+        if ($filterTgl) {
+            $query->whereDate('birthday', $filterTgl);
+        }
+
+        // Pagination
+        $penduduks = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Statistik
         $totalPenduduk = Penduduk::count();
         $pendudukBaru = Penduduk::whereDate('created_at', today())->count();
-        
-        return view('kependudukan.index', compact('penduduks', 'totalPenduduk', 'pendudukBaru'));
+
+        return view('kependudukan.index', compact(
+            'penduduks',
+            'totalPenduduk',
+            'pendudukBaru',
+            'search',
+            'filterGender',
+            'filterTgl'
+        ));
     }
 
     /**
@@ -39,45 +74,27 @@ class PendudukController extends Controller
             'birthday' => 'required|date',
             'gender' => 'required|in:L,P',
             'phone' => 'nullable|string|max:15'
-        ], [
-            'nik.required' => 'NIK wajib diisi',
-            'nik.digits' => 'NIK harus terdiri dari 16 digit angka',
-            'nik.unique' => 'NIK sudah terdaftar',
-            'first_name.required' => 'Nama depan wajib diisi',
-            'last_name.required' => 'Nama belakang wajib diisi',
-            'birthday.required' => 'Tanggal lahir wajib diisi',
-            'birthday.date' => 'Format tanggal lahir tidak valid',
-            'gender.required' => 'Jenis kelamin wajib dipilih',
-            'gender.in' => 'Pilihan jenis kelamin tidak valid',
-            'phone.max' => 'Nomor telepon maksimal 15 karakter'
         ]);
 
-        try {
-            $cleanData = [
-                'nik' => trim($request->nik),
-                'first_name' => trim($request->first_name),
-                'last_name' => trim($request->last_name),
-                'birthday' => $request->birthday,
-                'gender' => trim($request->gender),
-                'phone' => $request->phone ? trim($request->phone) : null,
-            ];
+        $cleanData = [
+            'nik' => trim($request->nik),
+            'first_name' => trim($request->first_name),
+            'last_name' => trim($request->last_name),
+            'birthday' => $request->birthday,
+            'gender' => trim($request->gender),
+            'phone' => $request->phone ? trim($request->phone) : null,
+        ];
 
-            Penduduk::create($cleanData);
+        Penduduk::create($cleanData);
 
-            return redirect()->route('penduduk.index')
-                ->with('success', 'Data penduduk berhasil ditambahkan!');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+        return redirect()->route('penduduk.index')
+            ->with('success', 'Data penduduk berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
         $penduduk = Penduduk::findOrFail($id);
         return view('kependudukan.show', compact('penduduk'));
@@ -86,7 +103,7 @@ class PendudukController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $penduduk = Penduduk::findOrFail($id);
         return view('kependudukan.edit', compact('penduduk'));
@@ -95,7 +112,7 @@ class PendudukController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'nik' => 'required|digits:16|unique:penduduks,nik,' . $id,
@@ -104,58 +121,34 @@ class PendudukController extends Controller
             'birthday' => 'required|date',
             'gender' => 'required|in:L,P',
             'phone' => 'nullable|string|max:15'
-        ], [
-            'nik.required' => 'NIK wajib diisi',
-            'nik.digits' => 'NIK harus terdiri dari 16 digit angka',
-            'nik.unique' => 'NIK sudah terdaftar',
-            'first_name.required' => 'Nama depan wajib diisi',
-            'last_name.required' => 'Nama belakang wajib diisi',
-            'birthday.required' => 'Tanggal lahir wajib diisi',
-            'birthday.date' => 'Format tanggal lahir tidak valid',
-            'gender.required' => 'Jenis kelamin wajib dipilih',
-            'gender.in' => 'Pilihan jenis kelamin tidak valid',
-            'phone.max' => 'Nomor telepon maksimal 15 karakter'
         ]);
 
-        try {
-            $penduduk = Penduduk::findOrFail($id);
+        $penduduk = Penduduk::findOrFail($id);
 
-            $cleanData = [
-                'nik' => trim($request->nik),
-                'first_name' => trim($request->first_name),
-                'last_name' => trim($request->last_name),
-                'birthday' => $request->birthday,
-                'gender' => trim($request->gender),
-                'phone' => $request->phone ? trim($request->phone) : null,
-            ];
+        $cleanData = [
+            'nik' => trim($request->nik),
+            'first_name' => trim($request->first_name),
+            'last_name' => trim($request->last_name),
+            'birthday' => $request->birthday,
+            'gender' => trim($request->gender),
+            'phone' => $request->phone ? trim($request->phone) : null,
+        ];
 
-            $penduduk->update($cleanData);
+        $penduduk->update($cleanData);
 
-            return redirect()->route('penduduk.index')
-                ->with('success', 'Data penduduk berhasil diperbarui!');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+        return redirect()->route('penduduk.index')
+            ->with('success', 'Data penduduk berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        try {
-            $penduduk = Penduduk::findOrFail($id);
-            $penduduk->delete();
+        $penduduk = Penduduk::findOrFail($id);
+        $penduduk->delete();
 
-            return redirect()->route('penduduk.index')
-                ->with('success', 'Data penduduk berhasil dihapus!');
-
-        } catch (\Exception $e) {
-            return redirect()->route('penduduk.index')
-                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
-        }
+        return redirect()->route('penduduk.index')
+            ->with('success', 'Data penduduk berhasil dihapus!');
     }
 }

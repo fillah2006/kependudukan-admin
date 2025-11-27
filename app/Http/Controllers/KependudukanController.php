@@ -11,16 +11,6 @@ class KependudukanController extends Controller
      */
     public function index()
     {
-        $data = [
-            'admin_name' => 'Admin Dukcapil',
-            'last_login' => date('Y-m-d H:i:s'),
-            'penduduk' => [
-                ['nama' => 'Andi', 'usia' => 32, 'status' => 'Menikah'],
-                ['nama' => 'Budi', 'usia' => 25, 'status' => 'Belum Menikah'],
-                ['nama' => 'Citra', 'usia' => 40, 'status' => 'Menikah'],
-            ],
-        ];
-
         return view('kependudukan.index', $data);
     }
 

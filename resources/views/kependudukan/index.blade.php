@@ -7,6 +7,23 @@
 
 @section('content')
 <div class="container mb-5">
+
+    <!-- Search Bar -->
+    <div class="glass-card mb-4 p-3">
+        <form action="{{ route('penduduk.index') }}" method="GET" class="row g-2">
+            <div class="col-md-10">
+                <input type="text" name="search" class="form-control neo-input"
+                       placeholder="Cari nama, NIK, atau nomor telepon..."
+                       value="{{ request('search') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-neo-primary w-100">
+                    <i class="fas fa-search me-1"></i> Cari
+                </button>
+            </div>
+        </form>
+    </div>
+
     <!-- Stats Cards -->
     <div class="row mb-4">
         <div class="col-md-3 mb-3">
@@ -68,35 +85,29 @@
                     <tbody>
                         @foreach($penduduks as $penduduk)
                         <tr>
-                            <td data-label="No">{{ $loop->iteration }}</td>
-                            <td data-label="Nama Lengkap">
-                                <strong>{{ $penduduk->first_name }} {{ $penduduk->last_name }}</strong>
-                            </td>
-                            <td data-label="Tanggal Lahir">
-                                {{ \Carbon\Carbon::parse($penduduk->birthday)->format('d M Y') }}
-                            </td>
-                            <td data-label="Jenis Kelamin">
+                            <td>{{ $loop->iteration }}</td>
+                            <td><strong>{{ $penduduk->first_name }} {{ $penduduk->last_name }}</strong></td>
+                            <td>{{ \Carbon\Carbon::parse($penduduk->birthday)->format('d M Y') }}</td>
+                            <td>
                                 <span class="badge-gender {{ $penduduk->gender == 'L' ? 'badge-male' : 'badge-female' }}">
                                     {{ $penduduk->gender == 'L' ? 'Laki-laki' : 'Perempuan' }}
                                 </span>
                             </td>
-                            <td data-label="NIK">
+                            <td>
                                 @if($penduduk->nik)
-                                <i class="fas fa-id-card me-1 text-muted"></i>
-                                {{ $penduduk->nik }}
+                                    <i class="fas fa-id-card me-1 text-muted"></i> {{ $penduduk->nik }}
                                 @else
-                                <span class="text-muted">-</span>
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td data-label="Telepon">
+                            <td>
                                 @if($penduduk->phone)
-                                <i class="fas fa-phone me-1 text-muted"></i>
-                                {{ $penduduk->phone }}
+                                    <i class="fas fa-phone me-1 text-muted"></i> {{ $penduduk->phone }}
                                 @else
-                                <span class="text-muted">-</span>
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td data-label="Aksi">
+                            <td>
                                 <div class="action-buttons">
                                     <a href="{{ route('penduduk.edit', $penduduk->id) }}" class="btn btn-neo-warning btn-sm" title="Edit Data">
                                         <i class="fas fa-edit"></i>
@@ -104,7 +115,7 @@
                                     <form action="{{ route('penduduk.destroy', $penduduk->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-neo-danger btn-sm" title="Hapus Data" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                        <button type="submit" class="btn btn-neo-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data ini?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>

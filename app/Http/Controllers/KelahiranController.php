@@ -10,8 +10,20 @@ class KelahiranController extends Controller
 {
     public function index()
     {
-        $kelahiran = Kelahiran::with('orangtua')->latest()->get();
-        return view('kelahiran.index', compact('kelahiran'));
+        // Pagination
+        $kelahiran = Kelahiran::with('orangtua')->latest()->paginate(10);
+
+        // Hitung statistik dari SEMUA data (bukan dari paginated)
+        $totalLakiLaki = Kelahiran::where('jenis_kelamin', 'L')->count();
+        $totalPerempuan = Kelahiran::where('jenis_kelamin', 'P')->count();
+        $totalKelahiran = Kelahiran::count();
+
+        return view('kelahiran.index', compact(
+            'kelahiran',
+            'totalLakiLaki',
+            'totalPerempuan',
+            'totalKelahiran'
+        ));
     }
 
     public function create()

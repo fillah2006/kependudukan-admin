@@ -8,13 +8,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelahiranController;
 use App\Http\Controllers\KependudukanController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('/', function () {
+    //return view('welcome');
+//});
 
 
 Route::get('/adminpenduduk', [KependudukanController::class, 'index'])->name('kependudukan.index');
-Route::get('/auth', [AuthController::class, 'index']);
+Route::get('', [AuthController::class, 'index']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
