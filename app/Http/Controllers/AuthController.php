@@ -1,13 +1,16 @@
 <?php
-// app/Http/Controllers/AuthController.php
 
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Penduduk;
+use App\Models\Kelahiran;
+use App\Models\OrangTua;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -55,7 +58,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed'
+            'password' => 'required|min:6|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -64,10 +68,18 @@ class AuthController extends Controller
                 ->withInput();
         }
 
+        $avatarPath = null;
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'avatar' => $avatarPath,
+            'role' => 'user'
         ]);
 
         Auth::login($user);
@@ -82,12 +94,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
-    }
-
-    // Dashboard
-    public function dashboard()
-    {
-        return view('dashboard');
+        return redirect()->route('login');
     }
 }

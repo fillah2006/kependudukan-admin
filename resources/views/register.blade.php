@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Buat Akun Baru</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
+       <style>
         * {
             margin: 0;
             padding: 0;
@@ -458,7 +458,7 @@
             </div>
         @endif
 
-        <form method="POST" action="/register" id="registerForm">
+        <form method="POST" action="/register" id="registerForm" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <div class="input-field">
@@ -491,6 +491,12 @@
                 </div>
             </div>
 
+            <!-- Input Avatar -->
+            <div class="form-group">
+                <label for="avatar" style="color:white;">Upload Avatar (Opsional)</label>
+                <input type="file" name="avatar" id="avatar" accept="image/*">
+            </div>
+
             <button type="submit" class="btn-register">
                 <i class="fas fa-user-plus"></i> CREATE ACCOUNT
             </button>
@@ -507,6 +513,7 @@
                 <li>Email harus valid dan belum terdaftar</li>
                 <li>Password minimal 6 karakter</li>
                 <li>Konfirmasi password harus sama</li>
+                <li>Avatar bersifat opsional</li>
             </ul>
         </div>
 
@@ -531,19 +538,6 @@
             }
         }
 
-        // Input focus effects
-        const inputs = document.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.02)';
-            });
-
-            input.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
-        });
-
-        // Password confirmation validation
         const password = document.getElementById('password');
         const confirmPassword = document.querySelector('input[name="password_confirmation"]');
 
@@ -558,13 +552,11 @@
         password.addEventListener('input', validatePassword);
         confirmPassword.addEventListener('input', validatePassword);
 
-        // Form submission handler
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.style.display = 'flex';
         });
 
-        // Initialize
         createParticles();
     </script>
 </body>

@@ -1,58 +1,72 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Penduduk;
+use Illuminate\Http\Request;
 
 class PendudukController extends Controller
 {
     /**
      * Display a listing of the resource (search + filter + pagination).
      */
-    public function index(Request $request)
-    {
-        $search = $request->search;
-        $filterGender = $request->gender;
-        $filterTgl = $request->birthday;
+    // Di PendudukController index() method, tambahkan:
+public function index(Request $request)
+{
+    $search = $request->search;
+    $filterGender = $request->gender;
+    $filterTgl = $request->birthday;
+    $filterStatus = $request->status; // tambah filter status
 
-        $query = Penduduk::query();
+    $query = Penduduk::with('kematian'); // eager load kematian
 
-        // === SEARCH ===
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('first_name', 'LIKE', "%$search%")
-                  ->orWhere('last_name', 'LIKE', "%$search%")
-                  ->orWhere('nik', 'LIKE', "%$search%");
-            });
-        }
-
-        // === FILTER JENIS KELAMIN ===
-        if ($filterGender) {
-            $query->where('gender', $filterGender);
-        }
-
-        // === FILTER TANGGAL LAHIR ===
-        if ($filterTgl) {
-            $query->whereDate('birthday', $filterTgl);
-        }
-
-        // Pagination
-        $penduduks = $query->orderBy('created_at', 'desc')->paginate(10);
-
-        // Statistik
-        $totalPenduduk = Penduduk::count();
-        $pendudukBaru = Penduduk::whereDate('created_at', today())->count();
-
-        return view('kependudukan.index', compact(
-            'penduduks',
-            'totalPenduduk',
-            'pendudukBaru',
-            'search',
-            'filterGender',
-            'filterTgl'
-        ));
+    // === SEARCH ===
+    if ($search) {
+        $query->search($search);
     }
+
+    // === FILTER JENIS KELAMIN ===
+    if ($filterGender) {
+        $query->where('gender', $filterGender);
+    }
+
+    // === FILTER TANGGAL LAHIR ===
+    if ($filterTgl) {
+        $query->whereDate('birthday', $filterTgl);
+    }
+
+    // === FILTER STATUS HIDUP/MENINGGAL ===
+    if ($filterStatus == 'hidup') {
+        $query->hidup();
+    } elseif ($filterStatus == 'meninggal') {
+        $query->meninggal();
+    }
+
+    // Pagination
+    $penduduks = $query->orderBy('created_at', 'desc')->paginate(10);
+
+    // Statistik
+    $stats = Penduduk::getStatistics();
+
+    $totalPenduduk = $stats['total'];
+    $maleCount = $stats['male'];
+    $femaleCount = $stats['female'];
+
+    // Penduduk baru hari ini
+    $pendudukBaru = Penduduk::whereDate('created_at', today())->count();
+
+    return view('kependudukan.index', compact(
+        'penduduks',
+        'totalPenduduk',
+        'pendudukBaru',
+        'maleCount',
+        'femaleCount',
+        'stats',
+        'search',
+        'filterGender',
+        'filterTgl',
+        'filterStatus'
+    ));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -68,21 +82,21 @@ class PendudukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nik' => 'required|digits:16|unique:penduduks,nik',
+            'nik'        => 'required|digits:16|unique:penduduks,nik',
             'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'birthday' => 'required|date',
-            'gender' => 'required|in:L,P',
-            'phone' => 'nullable|string|max:15'
+            'last_name'  => 'required|string|max:255',
+            'birthday'   => 'required|date',
+            'gender'     => 'required|in:L,P',
+            'phone'      => 'nullable|string|max:15',
         ]);
 
         $cleanData = [
-            'nik' => trim($request->nik),
+            'nik'        => trim($request->nik),
             'first_name' => trim($request->first_name),
-            'last_name' => trim($request->last_name),
-            'birthday' => $request->birthday,
-            'gender' => trim($request->gender),
-            'phone' => $request->phone ? trim($request->phone) : null,
+            'last_name'  => trim($request->last_name),
+            'birthday'   => $request->birthday,
+            'gender'     => trim($request->gender),
+            'phone'      => $request->phone ? trim($request->phone) : null,
         ];
 
         Penduduk::create($cleanData);
@@ -115,23 +129,23 @@ class PendudukController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nik' => 'required|digits:16|unique:penduduks,nik,' . $id,
+            'nik'        => 'required|digits:16|unique:penduduks,nik,' . $id,
             'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'birthday' => 'required|date',
-            'gender' => 'required|in:L,P',
-            'phone' => 'nullable|string|max:15'
+            'last_name'  => 'required|string|max:255',
+            'birthday'   => 'required|date',
+            'gender'     => 'required|in:L,P',
+            'phone'      => 'nullable|string|max:15',
         ]);
 
         $penduduk = Penduduk::findOrFail($id);
 
         $cleanData = [
-            'nik' => trim($request->nik),
+            'nik'        => trim($request->nik),
             'first_name' => trim($request->first_name),
-            'last_name' => trim($request->last_name),
-            'birthday' => $request->birthday,
-            'gender' => trim($request->gender),
-            'phone' => $request->phone ? trim($request->phone) : null,
+            'last_name'  => trim($request->last_name),
+            'birthday'   => $request->birthday,
+            'gender'     => trim($request->gender),
+            'phone'      => $request->phone ? trim($request->phone) : null,
         ];
 
         $penduduk->update($cleanData);

@@ -1,0 +1,367 @@
+/* Neo Primary Button */
+.btn-neo-primary {
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+    padding: 18px 40px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 12px 35px rgba(102, 126, 234, 0.5),
+        0 0 60px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-neo-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent);
+    transition: left 0.7s ease;
+}
+
+.btn-neo-primary:hover::before {
+    left: 100%;
+}
+
+.btn-neo-primary:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow:
+        0 20px 45px rgba(102, 126, 234, 0.7),
+        0 0 80px rgba(102, 126, 234, 0.4);
+}
+
+.btn-neo-primary:active {
+    transform: translateY(-3px) scale(1.02);
+}
+
+/* Neo Secondary Button */
+.btn-neo-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 18px 40px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-neo-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+}
+
+.btn-neo-secondary:active {
+    transform: translateY(-2px);
+}
+
+/* Neo Danger Button */
+.btn-neo-danger {
+    background: var(--gradient-danger);
+    border: none;
+    color: white;
+    padding: 18px 40px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 12px 35px rgba(239, 71, 111, 0.5),
+        0 0 60px rgba(239, 71, 111, 0.3);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-neo-danger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent);
+    transition: left 0.7s ease;
+}
+
+.btn-neo-danger:hover::before {
+    left: 100%;
+}
+
+.btn-neo-danger:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow:
+        0 20px 45px rgba(239, 71, 111, 0.7),
+        0 0 80px rgba(239, 71, 111, 0.4);
+}
+
+.btn-neo-danger:active {
+    transform: translateY(-3px) scale(1.02);
+}
+
+/* Neo Success Button */
+.btn-neo-success {
+    background: var(--gradient-success);
+    border: none;
+    color: white;
+    padding: 18px 40px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 12px 35px rgba(78, 205, 196, 0.5),
+        0 0 60px rgba(78, 205, 196, 0.3);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-neo-success::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent);
+    transition: left 0.7s ease;
+}
+
+.btn-neo-success:hover::before {
+    left: 100%;
+}
+
+.btn-neo-success:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow:
+        0 20px 45px rgba(78, 205, 196, 0.7),
+        0 0 80px rgba(78, 205, 196, 0.4);
+}
+
+/* Neo Warning Button */
+.btn-neo-warning {
+    background: var(--gradient-warning);
+    border: none;
+    color: #212529;
+    padding: 18px 40px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 12px 35px rgba(255, 209, 102, 0.5),
+        0 0 60px rgba(255, 209, 102, 0.3);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-neo-warning::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent);
+    transition: left 0.7s ease;
+}
+
+.btn-neo-warning:hover::before {
+    left: 100%;
+}
+
+.btn-neo-warning:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow:
+        0 20px 45px rgba(255, 209, 102, 0.7),
+        0 0 80px rgba(255, 209, 102, 0.4);
+}
+
+/* Neo Info Button */
+.btn-neo-info {
+    background: var(--gradient-info);
+    border: none;
+    color: white;
+    padding: 18px 40px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 12px 35px rgba(23, 162, 184, 0.5),
+        0 0 60px rgba(23, 162, 184, 0.3);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-neo-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent);
+    transition: left 0.7s ease;
+}
+
+.btn-neo-info:hover::before {
+    left: 100%;
+}
+
+.btn-neo-info:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow:
+        0 20px 45px rgba(23, 162, 184, 0.7),
+        0 0 80px rgba(23, 162, 184, 0.4);
+}
+
+/* Button Sizes */
+.btn-neo-sm {
+    padding: 12px 25px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+}
+
+.btn-neo-lg {
+    padding: 22px 50px;
+    font-size: 1.3rem;
+    border-radius: 20px;
+}
+
+/* Button with Icon */
+.btn-neo-primary i,
+.btn-neo-danger i,
+.btn-neo-success i,
+.btn-neo-warning i,
+.btn-neo-info i,
+.btn-neo-secondary i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+/* Loading Button */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid transparent;
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.btn-neo-warning.btn-loading::after {
+    border-top-color: #212529;
+}
+
+/* Responsive Buttons */
+@media (max-width: 768px) {
+    .btn-neo-primary,
+    .btn-neo-secondary,
+    .btn-neo-danger,
+    .btn-neo-success,
+    .btn-neo-warning,
+    .btn-neo-info {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Action Buttons (Small) */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons .btn-neo-primary,
+.action-buttons .btn-neo-secondary,
+.action-buttons .btn-neo-danger,
+.action-buttons .btn-neo-success,
+.action-buttons .btn-neo-warning,
+.action-buttons .btn-neo-info {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+}
+
+.action-buttons .btn-neo-primary i,
+.action-buttons .btn-neo-danger i,
+.action-buttons .btn-neo-success i,
+.action-buttons .btn-neo-warning i,
+.action-buttons .btn-neo-info i,
+.action-buttons .btn-neo-secondary i {
+    margin-right: 4px;
+    font-size: 0.9rem;
+}
